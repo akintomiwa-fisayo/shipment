@@ -45,27 +45,27 @@ A production-ready RESTful API for managing shipments built with Node.js, Expres
 shipment/
 ├── src/
 │   ├── config/          # Configuration files
-│   │   ├── database.js  # MongoDB connection
-│   │   ├── swagger.js   # OpenAPI/Swagger specification
-│   │   └── index.js     # App configuration
+│   │   ├── database.ts  # MongoDB connection
+│   │   ├── swagger.ts   # OpenAPI/Swagger specification
+│   │   └── index.ts     # App configuration
 │   ├── controllers/     # Route handlers
-│   │   └── shipmentController.js
+│   │   └── shipmentController.ts
 │   ├── middleware/      # Custom middleware
-│   │   ├── errorHandler.js
-│   │   └── validateRequest.js
+│   │   ├── errorHandler.ts
+│   │   └── validateRequest.ts
 │   ├── models/          # Mongoose models
-│   │   └── Shipment.js
+│   │   └── Shipment.ts
 │   ├── routes/          # API routes
-│   │   ├── index.js
-│   │   └── shipmentRoutes.js
+│   │   ├── index.ts
+│   │   └── shipmentRoutes.ts
 │   ├── utils/           # Utility functions
-│   │   ├── ApiError.js
-│   │   ├── asyncHandler.js
-│   │   └── responseFormatter.js
-│   ├── app.js           # Express app setup
-│   └── server.js        # Server entry point
+│   │   ├── ApiError.ts
+│   │   ├── asyncHandler.ts
+│   │   └── responseFormatter.ts
+│   ├── app.ts           # Express app setup
+│   └── server.ts        # Server entry point
 ├── tests/               # Test files
-│   └── shipment.test.js
+│   └── shipment.test.ts
 ├── .env.example         # Environment variables template
 ├── .gitignore
 ├── jest.config.js
@@ -492,8 +492,8 @@ npm test -- --coverage
    ```json
    {
      "version": 2,
-     "builds": [{ "src": "src/server.js", "use": "@vercel/node" }],
-     "routes": [{ "src": "/(.*)", "dest": "src/server.js" }]
+     "builds": [{ "src": "src/server.ts", "use": "@vercel/node" }],
+     "routes": [{ "src": "/(.*)", "dest": "src/server.ts" }]
    }
    ```
 3. Run `vercel` and follow prompts
