@@ -1,15 +1,16 @@
-require("dotenv").config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-const createApp = require("./app");
-const { connectDB } = require("./config/database");
-const config = require("./config");
+import createApp from './app';
+import { connectDB } from './config/database';
+import config from './config';
 
 const app = createApp();
 
 /**
  * Start the server
  */
-const startServer = async () => {
+const startServer = async (): Promise<void> => {
   try {
     // Connect to MongoDB
     await connectDB();
@@ -30,8 +31,8 @@ const startServer = async () => {
     });
 
     // Handle unhandled promise rejections
-    process.on("unhandledRejection", (err) => {
-      console.error("UNHANDLED REJECTION! Shutting down...");
+    process.on('unhandledRejection', (err: Error) => {
+      console.error('UNHANDLED REJECTION! Shutting down...');
       console.error(err.name, err.message);
       server.close(() => {
         process.exit(1);
@@ -39,16 +40,17 @@ const startServer = async () => {
     });
 
     // Handle SIGTERM signal
-    process.on("SIGTERM", () => {
-      console.log("SIGTERM received. Shutting down gracefully...");
+    process.on('SIGTERM', () => {
+      console.log('SIGTERM received. Shutting down gracefully...');
       server.close(() => {
-        console.log("Process terminated.");
+        console.log('Process terminated.');
       });
     });
   } catch (error) {
-    console.error("Failed to start server:", error);
+    console.error('Failed to start server:', error);
     process.exit(1);
   }
 };
 
 startServer();
+

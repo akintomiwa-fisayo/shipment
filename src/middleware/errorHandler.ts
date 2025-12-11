@@ -1,52 +1,50 @@
-const ApiError = require("../utils/ApiError");
-const { errorResponse } = require("../utils/responseFormatter");
-const config = require("../config");
+import { Request, Response, NextFunction } from 'express';
+import ApiError from '../utils/ApiError';
+import { errorResponse } from '../utils/responseFormatter';
+import config from '../config';
+import { MongooseError, ValidationError } from '../types';
+
+interface ErrorWithStack extends ApiError {
+  stack?: string;
+}
 
 /**
  * Handle Mongoose CastError (invalid ObjectId)
- * @param {Error} err - Mongoose CastError
- * @returns {ApiError}
  */
-const handleCastError = (err) => {
+const handleCastError = (err: MongooseError): ApiError => {
   const message = `Invalid ${err.path}: ${err.value}`;
   return ApiError.badRequest(message);
 };
 
 /**
  * Handle Mongoose duplicate key error
- * @param {Error} err - Mongoose duplicate key error
- * @returns {ApiError}
  */
-const handleDuplicateKeyError = (err) => {
-  const field = Object.keys(err.keyValue)[0];
-  const value = err.keyValue[field];
+const handleDuplicateKeyError = (err: MongooseError): ApiError => {
+  const field = Object.keys(err.keyValue || {})[0];
+  const value = err.keyValue?.[field];
   const message = `${field} '${value}' already exists`;
   return ApiError.conflict(message);
 };
 
 /**
  * Handle Mongoose validation error
- * @param {Error} err - Mongoose validation error
- * @returns {ApiError}
  */
-const handleValidationError = (err) => {
-  const errors = Object.values(err.errors).map((el) => ({
+const handleValidationError = (err: MongooseError): ApiError => {
+  const errors: ValidationError[] = Object.values(err.errors || {}).map((el) => ({
     field: el.path,
     message: el.message,
   }));
-  const message = "Validation failed";
-  const error = ApiError.badRequest(message);
-  error.errors = errors;
-  return error;
+  const message = 'Validation failed';
+  return ApiError.badRequest(message, errors);
 };
 
 /**
  * Send error response in development environment
  * Includes full error details and stack trace
  */
-const sendErrorDev = (err, res) => {
+const sendErrorDev = (err: ErrorWithStack, res: Response): void => {
   const response = errorResponse(err.message, err.errors);
-  response.stack = err.stack;
+  (response as { stack?: string }).stack = err.stack;
 
   res.status(err.statusCode).json(response);
 };
@@ -55,14 +53,14 @@ const sendErrorDev = (err, res) => {
  * Send error response in production environment
  * Only includes safe error information
  */
-const sendErrorProd = (err, res) => {
+const sendErrorProd = (err: ApiError, res: Response): void => {
   // Operational, trusted error: send message to client
   if (err.isOperational) {
     res.status(err.statusCode).json(errorResponse(err.message, err.errors));
   } else {
     // Programming or unknown error: don't leak error details
-    console.error("ERROR:", err);
-    res.status(500).json(errorResponse("Something went wrong"));
+    console.error('ERROR:', err);
+    res.status(500).json(errorResponse('Something went wrong'));
   }
 };
 
@@ -70,14 +68,19 @@ const sendErrorProd = (err, res) => {
  * Global error handling middleware
  * Processes all errors and sends appropriate response
  */
-const errorHandler = (err, req, res, next) => {
+export const errorHandler = (
+  err: ApiError & MongooseError,
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+): void => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
+  err.status = err.status || 'error';
 
   // Handle specific Mongoose errors
-  let error = err;
+  let error: ApiError = err;
 
-  if (err.name === "CastError") {
+  if (err.name === 'CastError') {
     error = handleCastError(err);
   }
 
@@ -85,12 +88,12 @@ const errorHandler = (err, req, res, next) => {
     error = handleDuplicateKeyError(err);
   }
 
-  if (err.name === "ValidationError") {
+  if (err.name === 'ValidationError') {
     error = handleValidationError(err);
   }
 
   // Send appropriate response based on environment
-  if (config.nodeEnv === "development") {
+  if (config.nodeEnv === 'development') {
     sendErrorDev(error, res);
   } else {
     sendErrorProd(error, res);
@@ -100,8 +103,11 @@ const errorHandler = (err, req, res, next) => {
 /**
  * Handle 404 Not Found for undefined routes
  */
-const notFoundHandler = (req, res, next) => {
+export const notFoundHandler = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void => {
   next(ApiError.notFound(`Route ${req.originalUrl} not found`));
 };
 
-module.exports = { errorHandler, notFoundHandler };
