@@ -4,7 +4,7 @@ A production-ready RESTful API for managing shipments built with Node.js, Expres
 
 ## 🌐 Live Demo
 
-**Base URL:** `https://your-deployed-url.com`
+**Base URL:** `https://shipment-production-4397.up.railway.app`
 
 > Replace with your actual deployed URL after deployment
 
@@ -130,17 +130,17 @@ The API will be available at `http://localhost:3000`
 Access the interactive API documentation at:
 
 - **Local:** `http://localhost:3000/api-docs`
-- **Production:** `https://your-deployed-url.com/api-docs`
+- **Production:** `https://shipment-production-4397.up.railway.app/api-docs`
 
 You can also access the raw OpenAPI JSON specification at:
 
 - **Local:** `http://localhost:3000/api-docs.json`
-- **Production:** `https://your-deployed-url.com/api-docs.json`
+- **Production:** `https://shipment-production-4397.up.railway.app/api-docs.json`
 
 ### Base URL
 
 - **Local:** `http://localhost:3000/api`
-- **Production:** `https://your-deployed-url.com/api`
+- **Production:** `https://shipment-production-4397.up.railway.app/api`
 
 ### Endpoints
 
