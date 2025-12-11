@@ -121,7 +121,7 @@ shipment/
    npm start
    ```
 
-The API will be available at `http://localhost:3000`
+The API will be available at `https://shipment-production-4397.up.railway.app`
 
 ## 📖 API Documentation
 
@@ -129,17 +129,17 @@ The API will be available at `http://localhost:3000`
 
 Access the interactive API documentation at:
 
-- **Local:** `http://localhost:3000/api-docs`
+- **Local:** `https://shipment-production-4397.up.railway.app/api-docs`
 - **Production:** `https://shipment-production-4397.up.railway.app/api-docs`
 
 You can also access the raw OpenAPI JSON specification at:
 
-- **Local:** `http://localhost:3000/api-docs.json`
+- **Local:** `https://shipment-production-4397.up.railway.app/api-docs.json`
 - **Production:** `https://shipment-production-4397.up.railway.app/api-docs.json`
 
 ### Base URL
 
-- **Local:** `http://localhost:3000/api`
+- **Local:** `https://shipment-production-4397.up.railway.app/api`
 - **Production:** `https://shipment-production-4397.up.railway.app/api`
 
 ### Endpoints
